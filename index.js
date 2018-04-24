@@ -1,13 +1,16 @@
 'use strict';
-
+const dotenv = require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-
-const { PORT, CLIENT_ORIGIN } = require('./config');
+const passport = require('passport')
+const { PORT, CLIENT_ORIGIN,JWT_SECRET} = require('./config');
+console.log("here",JWT_SECRET)
 const { dbConnect } = require('./db-mongoose');
 // const {dbConnect} = require('./db-knex');
-
+const localStrategy = require('./passport/local')
+const jwtStrategy = require('./passport/jwt')
+const userRouter = require('./routes/users');
 const app = express();
 
 app.use(
@@ -21,6 +24,11 @@ app.use(
     origin: CLIENT_ORIGIN
   })
 );
+//CConfigure passport
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+//Mount Router 
+app.use('/api',userRouter);
 
 function runServer(port = PORT) {
   const server = app
