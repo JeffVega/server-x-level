@@ -11,8 +11,10 @@ const { dbConnect } = require('./db-mongoose');
 const localStrategy = require('./passport/local')
 const jwtStrategy = require('./passport/jwt')
 const userRouter = require('./routes/users');
+const authRouter = require('./routes/auth')
 const app = express();
 
+app.use(express.json());
 app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
     skip: (req, res) => process.env.NODE_ENV === 'test'
@@ -29,7 +31,7 @@ passport.use(localStrategy);
 passport.use(jwtStrategy);
 //Mount Router 
 app.use('/api',userRouter);
-
+app.use('/api',authRouter);
 function runServer(port = PORT) {
   const server = app
     .listen(port, () => {
