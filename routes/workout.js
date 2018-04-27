@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const Work = require('../models/workout')
 
 /* ========== GET/READ ALL ITEMS ========== */
-router.get('/work',(req,res,next) => {
+router.get('/workout',(req,res,next) => {
   // const userId = req.user.id;
 
   Work.find()
@@ -21,7 +21,7 @@ router.get('/work',(req,res,next) => {
   })
 });
 /* ========== GET/READ A SINGLE ITEM ========== */
-router.get('/work/:id', (req, res, next) => {
+router.get('/workout/:id', (req, res, next) => {
   const { id } = req.params;
   // const userId =req.user.id;
 
@@ -44,7 +44,7 @@ router.get('/work/:id', (req, res, next) => {
      return  next(err);
     });
 });
-router.post('/work', (req, res, next) => {
+router.post('/workout', (req, res, next) => {
   const { title,muscle,weight } = req.body;
 
   const newWork = { title,muscle,weight };
@@ -71,7 +71,7 @@ router.post('/work', (req, res, next) => {
 
 
 /* ========== PUT/UPDATE A SINGLE ITEM ========== */
-router.put('/work/:id', (req, res, next) => {
+router.put('/workout/:id', (req, res, next) => {
   const { id } = req.params;
   const { Work } = req.body; 
   const updateWork = {Work}; // name ,userId 
@@ -107,7 +107,7 @@ router.put('/work/:id', (req, res, next) => {
       next(err);
     });
 });
-router.delete('/Work/:id', (req, res, next) => {
+router.delete('/workout/:id', (req, res, next) => {
   const { id } = req.params;
 
   Work.findByIdAndRemove(id)
