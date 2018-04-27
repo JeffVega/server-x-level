@@ -1,99 +1,118 @@
-'use strict';
 const express = require('express');
-
-const passport = require('passport');
-// const { Strategy: LocalStrategy } = require('passport-local');
-
 const router = express.Router();
+const mongoose = require('mongoose');
+const User = require('../models/user')
 
-const User = require('../models/user');
-
-/* ========== POST/CREATE AN USER ========== */
 router.post('/users', (req, res, next) => {
-  
-  const requiredFields = ['username', 'password'];
-  console.log("this",req.body)
-  const missingField = requiredFields.find(field => !(field in req.body));
+    const { username, password } = req.body;
 
-  if (missingField) {
-    const err = new Error(`Missing '${missingField}' in request body`);
-    err.status = 422;
-    return next(err);
-  }
+    //Chest for missing fields.
+    // const requiredFields = ['username', 'password'];
+    // const missingField = requiredFields.find(field => (!field in req.body))
 
-  const stringFields = ['username', 'password'];
-  const nonStringField = stringFields.find(
-    field => field in req.body && typeof req.body[field] !== 'string'
-  );
+    // if (missingField) {
+    //     const err = new Error(`Missing '${missingField}' in request body.`)
+    //     err.status = 422;
+    //     return next(err);
+    // }
 
-  if (nonStringField) {
-    const err = new Error(`Field: '${nonStringField}' must be type String`);
-    err.status = 422;
-    return next(err);
-  }
+    //Check that the username is a minimum of 1 character
+    
+    if (!req.body.password) {
+        const err = new Error('Missing `password` in request body')
+        err.status = 422;
+        return next(err);
+    }
+    if (!req.body.username) {
+        const err = new Error('Missing `username` in request body')
+        err.status = 422;
+        return next(err);
+    }
 
-  // If the username and password aren't trimmed we give an error.  Users might
-  // expect that these will work without trimming (i.e. they want the password
-  // "foobar ", including the space at the end).  We need to reject such values
-  // explicitly so the users know what's happening, rather than silently
-  // trimming them and expecting the user to understand.
-  // We'll silently trim the other fields, because they aren't credentials used
-  // to log in, so it's less of a problem.
-  const explicityTrimmedFields = ['username', 'password'];
-  const nonTrimmedField = explicityTrimmedFields.find(
-    field => req.body[field].trim() !== req.body[field]
-  );
+    //Check that the fields have no whitespace
+    const checkWhiteSpace = function(string) {
+        let check = false;
+        const whiteSpace = string.split('').forEach((character) => {
+            if (character === ' ') {
+                check = true;
+            }
+        })
+        if (check === true) {
+            const err = new Error(`Please ensure that there are no spaces in the username or password.`)
+            err.status = 422;
+            return next(err);
+        }
+    }
+    const checkArr = [username, password];
 
-  if (nonTrimmedField) {
-    const err = new Error(`Field: '${nonTrimmedField}' cannot start or end with whitespace`);
-    err.status = 422;
-    return next(err);
-  }
+    //Check that entries are strings.
+    const notString = function (string) {
+        if (typeof string !== 'string') {
+            const err = new Error(`Provided information contains an entry that is not a string.`)
+            err.status = 422;
+            return next(err);
+        }
+    }
 
-  // bcrypt truncates after 72 characters, so let's not give the illusion
-  // of security by storing extra **unused** info
-  const sizedFields = {
-    username: { min: 1 },
-    password: { min: 8, max: 72 }
-  };
-
-  const tooSmallField = Object.keys(sizedFields).find(
-    field => 'min' in sizedFields[field] &&
-      req.body[field].trim().length < sizedFields[field].min
-  );
-  if (tooSmallField) {
-    const min = sizedFields[tooSmallField].min;
-    const err = new Error(`Field: '${tooSmallField}' must be at least ${min} characters long`);
-    err.status = 422;
-    return next(err);
-  }
-
-  const tooLargeField = Object.keys(sizedFields).find(
-    field => 'max' in sizedFields[field] &&
-      req.body[field].trim().length > sizedFields[field].max
-  );
-
-  if (tooLargeField) {
-    const max = sizedFields[tooLargeField].max;
-    const err = new Error(`Field: '${tooSmallField}' must be at most ${max} characters long`);
-    err.status = 422;
-    return next(err);
-  }
-
-  // Username and password were validated as pre-trimmed
-  let { username, password} = req.body;
-
-  return User.create({ username, password })
-    .then(result => {
-      return res.status(201).location(`/api/users/${result.id}`).json(result);
+    checkArr.forEach((item) => {
+        notString(item);
+        checkWhiteSpace(item);
     })
-    .catch(err => {
-      if (err.code === 11000) {
-        err = new Error('The username already exists');
+
+    //Check that the password is a minimum of 8 characters and a maximum of 72 characters
+    
+
+    if (!username) {
+        const err = new Error('Missing `username` in request body');
         err.status = 400;
-      }
-      next(err);
-    });
-});
+        return next(err);
+    }
+    if (!password) {
+        const err = new Error('Missing `password` in request body');
+        err.status = 400;
+        return next(err);
+    } else if (password.length < 8 || password.length > 72) {
+        const err = new Error(`Password must be between 8 to 72 characters in length.`)
+        err.status = 422;
+        return next(err);
+    }
+
+    if (username.length < 1) {
+        const err = new Error(`Username must be at least one character long.`)
+        err.status = 422;
+        return next(err);
+    }
+
+    User.find()
+        .then((results) => {
+            let check = false;
+            results.forEach((user) => {
+                if (user.username === username) {
+                    check = true;
+                }
+            })
+            if (check === true) {
+                const err = new Error('That username already exists!');
+                err.status = 400;
+                return next(err);
+            } else {
+
+                return User.hashPassword(password)
+                    .then(digest => {
+                        const newUser = {
+                            username: username,
+                            password: digest
+                        }
+                        User.create(newUser)
+                            .then((result) => {
+                                console.log(newUser);
+                                res.location(`${req.originalUrl}/${result.id}`).status(201).json(result);
+                            })
+                            .catch((err) => next(err));
+                    })
+            }
+        })
+
+})
 
 module.exports = router;

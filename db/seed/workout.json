@@ -1,0 +1,27 @@
+[
+  {
+    "_id": "000000000000000000000000",
+    "title": "ButterFlies",
+    "muscle":"back",
+    "weight":123,
+    "content":"I felt like this is working good on my back",
+
+    "userId":"333333333333333333333300"
+
+  },
+  {
+    "_id": "000000000000000000000001",
+    "title": "Flies",
+    "muscle":"chest",
+    "weight":50,
+    "content":"I felt like this is workout is good on my chest",
+    "userId":"333333333333333333333301"
+  },
+  {
+    "_id": "000000000000000000000002",
+    "title": "Triceps",
+    "muscle":"Shoulder",
+    "weight":100,
+    "userId":"333333333333333333333302"
+  }
+]

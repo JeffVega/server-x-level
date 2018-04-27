@@ -12,6 +12,8 @@ const localStrategy = require('./passport/local')
 const jwtStrategy = require('./passport/jwt')
 const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth')
+const foodRouter = require('./routes/food')
+const calRouter = require('./routes/calculator')
 const app = express();
 
 app.use(express.json());
@@ -32,6 +34,8 @@ passport.use(jwtStrategy);
 //Mount Router 
 app.use('/api',userRouter);
 app.use('/api',authRouter);
+app.use('/api',foodRouter);
+app.use('/api',calRouter)
 function runServer(port = PORT) {
   const server = app
     .listen(port, () => {
