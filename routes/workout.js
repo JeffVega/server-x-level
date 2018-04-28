@@ -9,9 +9,12 @@ const Work = require('../models/workout')
 
 /* ========== GET/READ ALL ITEMS ========== */
 router.get('/workout',(req,res,next) => {
+  const userId = req.user.id;
+
+  let filter = {userId}
   // const userId = req.user.id;
 
-  Work.find()
+  Work.find(filter)
   .sort('created')
   .then(results => {
     res.json(results)
@@ -23,7 +26,7 @@ router.get('/workout',(req,res,next) => {
 /* ========== GET/READ A SINGLE ITEM ========== */
 router.get('/workout/:id', (req, res, next) => {
   const { id } = req.params;
-  // const userId =req.user.id;
+  const userId =req.user.id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     const err = new Error('The `id` is not valid');
@@ -31,7 +34,7 @@ router.get('/workout/:id', (req, res, next) => {
     return next(err);
   }
 
-  Work.findOne({_id:id})
+  Work.findOne({_id:id,userId})
     .populate('created')
     .then(result => {
       if (result) {
@@ -46,9 +49,9 @@ router.get('/workout/:id', (req, res, next) => {
 });
 router.post('/workout', (req, res, next) => {
   const { title,muscle,weight } = req.body;
-
-  const newWork = { title,muscle,weight };
-
+  const userId =req.user.id;
+  const newWork = { title,muscle,weight,userId };
+  console.log(userId)
   /***** Never trust users - validate input *****/
   if (!Work) {
     const err = new Error('Missing `Work` in request body');
@@ -74,7 +77,8 @@ router.post('/workout', (req, res, next) => {
 router.put('/workout/:id', (req, res, next) => {
   const { id } = req.params;
   const { Work } = req.body; 
-  const updateWork = {Work}; // name ,userId 
+  const userId = req.user.id;
+  const updateWork = {Work,userId}; // name ,userId 
   // const userId = req.user.id;
   /***** Never trust users - validate input *****/
   if (!Work) {

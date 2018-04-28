@@ -35,6 +35,7 @@ passport.use(jwtStrategy);
 //Mount Router 
 app.use('/api',userRouter);
 app.use('/api',authRouter);
+app.use(passport.authenticate('jwt', { session: false, failWithError: true }));
 app.use('/api',foodRouter);
 app.use('/api',calRouter)
 app.use('/api',workRouter)

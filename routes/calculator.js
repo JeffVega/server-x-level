@@ -4,7 +4,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Cal = require('../models/calculator')
-
+const Macros = require('../models/marco')
 router.post('/calculator', (req, res, next) => {
 
   const {
@@ -26,16 +26,22 @@ const newWeight = {
   level,
   percent
 }
+// res.json({
+//   calories,
+//   protein,
+//   fat
+// })
 
 const calories = calWeightLost(feet,inches,weight,age,sex,level,percent)
 const protein = calProteinToWeight(weight)
 const fat = calFatToCalories(calories)
 
-res.json({
-  calories,
-  protein,
-  fat
+Macros.create({calories,protein,fat})
+.then(results => {
+  return res.json(results)
 })
+
+
 .catch(err => {
   return  next(err);
  });
@@ -95,7 +101,7 @@ function calWeightLost(feet,inches,weight,age,sex,level,percent){
    
   }
   if(sex === "female"){
-  let weight3 = 10 * weight + 6.25 * height - 5 * age - 161  
+  let weight3 = 10 * weight + 6.25 * height2 - 5 * age - 161  
   let weight4 = weight3 * level2
   let weight5 = weight4 - (weight4 * percent2)
   let finalWeight = Math.round(weight5)

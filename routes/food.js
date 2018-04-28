@@ -8,9 +8,9 @@ const mongoose = require('mongoose');
 const Food = require('../models/food')
 /* ========== GET/READ ALL ITEMS ========== */
 router.get('/food',(req,res,next) => {
-  // const userId = req.user.id;
-
-  Food.find()
+  const userId = req.user.id;
+  let filter = {userId}
+  Food.find(filter)
   .sort('created')
   .then(results => {
     res.json(results)
@@ -22,7 +22,7 @@ router.get('/food',(req,res,next) => {
 /* ========== GET/READ A SINGLE ITEM ========== */
 router.get('/food/:id', (req, res, next) => {
   const { id } = req.params;
-  // const userId =req.user.id;
+  const userId =req.user.id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     const err = new Error('The `id` is not valid');
@@ -30,7 +30,7 @@ router.get('/food/:id', (req, res, next) => {
     return next(err);
   }
 
-  Food.findOne({_id:id})
+  Food.findOne({_id:id,userId})
     .populate('created')
     .then(result => {
       if (result) {
@@ -73,8 +73,9 @@ router.post('/food', (req, res, next) => {
 router.put('/food/:id', (req, res, next) => {
   const { id } = req.params;
   const { food } = req.body; 
-  const updateFood = {food}; // name ,userId 
-  // const userId = req.user.id;
+ // name ,userId 
+  const userId = req.user.id; 
+   const updateFood = {food,userId};
   /***** Never trust users - validate input *****/
   if (!food) {
     const err = new Error('Missing `food` in request body');
