@@ -8,6 +8,10 @@ const calculatorSchema = new mongoose.Schema({
   sex:{type:String, required:true},
   level:{type:Number, required:true},
   percent:{type:Number, required:true},
+  calories:{type:Number},
+  protein:{type:Number},
+  fat:{type:Number},
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   create:{type:Date, default:Date.now}
 })
 

@@ -78,7 +78,8 @@ router.put('/workout/:id', (req, res, next) => {
   const { id } = req.params;
   const { Work } = req.body; 
   const userId = req.user.id;
-  const updateWork = {Work,userId}; // name ,userId 
+  const updateWork = {Work,userId};
+   // name ,userId 
   // const userId = req.user.id;
   /***** Never trust users - validate input *****/
   if (!Work) {

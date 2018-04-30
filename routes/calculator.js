@@ -1,11 +1,35 @@
+
+
 const express = require('express');
 const router = express.Router();
 
 const mongoose = require('mongoose');
 
 const Cal = require('../models/calculator')
-const Macros = require('../models/marco')
-router.post('/calculator', (req, res, next) => {
+
+
+
+
+router.get('/cal',(req,res,next)=>{
+  const userId = req.user.id;
+  let filter = {userId}
+  Cal.find(filter)
+  .sort('created')
+  .then(results => {
+    res.json(results)
+  })
+  .catch(err => {
+    next(err)
+  })
+});
+
+
+
+
+router.post('/cal', (req, res, next) => {
+  const userId =req.user.id;
+  
+
 
   const {
     feet,
@@ -14,7 +38,7 @@ router.post('/calculator', (req, res, next) => {
     age,
     sex,
     level,
-    percent
+    percent  
   } = req.body;
 
 const newWeight = {
@@ -24,29 +48,36 @@ const newWeight = {
   age,
   sex,
   level,
-  percent
+  percent,
+  userId
 }
+
+const calories = calWeightLost(feet,inches,weight,age,sex,level,percent)
+const protein = calProteinToWeight(weight)
+const fat = calFatToCalories(calories)
 // res.json({
 //   calories,
 //   protein,
 //   fat
 // })
-
-const calories = calWeightLost(feet,inches,weight,age,sex,level,percent)
-const protein = calProteinToWeight(weight)
-const fat = calFatToCalories(calories)
-
-Macros.create({calories,protein,fat})
-.then(results => {
-  return res.json(results)
-})
-
-
-.catch(err => {
-  return  next(err);
- });
+const newWeight2 = {
+  ...newWeight,
+  calories,
+  protein,
+  fat
+}
+Cal.create(newWeight2)
+    .then(result => {
+      res.location(`${req.originalUrl}/${result.id}`).status(201).json(result);
+    })
+    .catch(err => {
+      if (err.code === 11000) {
+        err = new Error('That Cal already exists');
+        err.status = 400;
+      }
+      next(err);
+    });
 });
-
 
 function calHeightToCm(feet, inches) {
   // ABV = (og – fg) * 131.25

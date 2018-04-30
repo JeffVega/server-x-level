@@ -45,8 +45,8 @@ router.get('/food/:id', (req, res, next) => {
 });
 router.post('/food', (req, res, next) => {
   const { food } = req.body;
-
-  const newFood = { food};
+  const userId =req.user.id;
+  const newFood = { food,userId};
 
   /***** Never trust users - validate input *****/
   if (!food) {
