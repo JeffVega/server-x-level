@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const workoutSchema = new mongoose.Schema({
   title:{type:String, required:true},
   muscle:{type:String, required:true},
-  weight:{type:Number,required:true},
+  weight:{type:String,required:true},
   content:{type:String},
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 

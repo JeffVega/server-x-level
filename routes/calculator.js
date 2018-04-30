@@ -31,29 +31,29 @@ router.post('/cal', (req, res, next) => {
   
 
 
-  const {
-    feet,
-    inches,
-    weight,
-    age,
-    sex,
-    level,
-    percent  
-  } = req.body;
+  // const {
+  //   feet,
+  //   inches,
+  //   weight,
+  //   age,
+  //   sex,
+  //   level,
+  //   percent  
+  // } = req.body;
 
 const newWeight = {
-  feet,
-  inches,
-  weight,
-  age,
-  sex,
-  level,
-  percent,
-  userId
+  feet:parseInt(req.body.feet),
+  inches:parseInt(req.body.inches),
+  weight:parseInt(req.body.weight),
+  age:parseInt(req.body.age),
+  sex:req.body.sex,
+  level:parseInt(req.body.level),
+  percent:parseInt(req.body.percent),
+  userId:req.user.id
 }
 
-const calories = calWeightLost(feet,inches,weight,age,sex,level,percent)
-const protein = calProteinToWeight(weight)
+const calories = calWeightLost(newWeight.feet,newWeight.inches,newWeight.weight,newWeight.age,newWeight.sex,newWeight.level,newWeight.percent)
+const protein = calProteinToWeight(newWeight.weight)
 const fat = calFatToCalories(calories)
 // res.json({
 //   calories,
@@ -68,7 +68,7 @@ const newWeight2 = {
 }
 Cal.create(newWeight2)
     .then(result => {
-      res.location(`${req.originalUrl}/${result.id}`).status(201).json(result);
+      res.status(201).json(result);
     })
     .catch(err => {
       if (err.code === 11000) {
