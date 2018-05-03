@@ -51,7 +51,6 @@ router.post('/workout', (req, res, next) => {
   const { title,muscle,weight } = req.body;
   const userId =req.user.id;
   const newWork = { title,muscle,weight,userId };
-  console.log(userId)
   /***** Never trust users - validate input *****/
   if (!Work) {
     const err = new Error('Missing `Work` in request body');

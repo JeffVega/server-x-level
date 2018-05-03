@@ -91,7 +91,7 @@ function calPoundsToKg(weight) {
   return Math.round(kg)
 
 }
-console.log(calPoundsToKg(200))
+
 
 function activityLevel(level) {
   if (level === 1) {
@@ -140,14 +140,11 @@ function calWeightLost(feet,inches,weight,age,sex,level,percent){
   }
 }
   function calProteinToWeight(weight){
-    console.log("this is weight",weight)
     let proteinOutput = weight * 0.825
-    console.log("this is next weight",proteinOutput)
     let finalProtein = Math.round(proteinOutput)
     return finalProtein
   }
   function calFatToCalories(calories){
-    console.log("this is calories",calories)
     calories2 = calories * 0.25 / 9 
     let finalCalories = Math.round(calories2)
     return finalCalories

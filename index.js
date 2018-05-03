@@ -5,7 +5,6 @@ const cors = require('cors');
 const morgan = require('morgan');
 const passport = require('passport')
 const { PORT, CLIENT_ORIGIN,JWT_SECRET} = require('./config');
-console.log("here",JWT_SECRET)
 const { dbConnect } = require('./db-mongoose');
 // const {dbConnect} = require('./db-knex');
 const localStrategy = require('./passport/local')
