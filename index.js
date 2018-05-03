@@ -39,6 +39,25 @@ app.use(passport.authenticate('jwt', { session: false, failWithError: true }));
 app.use('/api',foodRouter);
 app.use('/api',calRouter)
 app.use('/api',workRouter)
+
+// Catch-all 404
+app.use(function (req, res, next) {
+  const err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// Catch-all Error handler
+// Add NODE_ENV check to prevent stacktrace leak
+app.use(function (err, req, res, next) {
+  res.status(err.status || 500);
+  res.json({
+    message: err.message,
+    error: app.get('env') === 'development' ? err : {}
+  });
+});
+
+
 function runServer(port = PORT) {
   const server = app
     .listen(port, () => {
@@ -48,11 +67,14 @@ function runServer(port = PORT) {
       console.error('Express failed to start');
       console.error(err);
     });
+    
 }
 
 if (require.main === module) {
   dbConnect();
   runServer();
 }
+
+
 
 module.exports = { app };
