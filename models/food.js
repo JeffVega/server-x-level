@@ -1,13 +1,12 @@
 const mongoose = require('mongoose')
-
+const moment = require('moment')
 
 const foodSchema = new mongoose.Schema({
   food:{type:String, required:true,},
   calories:{type:String, required:true},
-  create: {type: Date, default: Date.getDate()},
+  create: {type: String,  default: moment((Date.now())).format(' MM/DD/YY hh:mmA')},
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 })
-
 
 
   foodSchema.set('toObject',{
@@ -18,5 +17,4 @@ const foodSchema = new mongoose.Schema({
 
     }
   })
-
   module.exports = mongoose.model('Food',foodSchema)
