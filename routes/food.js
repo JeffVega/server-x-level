@@ -44,9 +44,9 @@ router.get('/food/:id', (req, res, next) => {
     });
 });
 router.post('/food', (req, res, next) => {
-  const { food } = req.body;
+  const { food,calories} = req.body;
   const userId =req.user.id;
-  const newFood = { food,userId};
+  const newFood = { food,calories,userId};
 
   /***** Never trust users - validate input *****/
   if (!food) {
@@ -72,7 +72,7 @@ router.post('/food', (req, res, next) => {
 /* ========== PUT/UPDATE A SINGLE ITEM ========== */
 router.put('/food/:id', (req, res, next) => {
   const { id } = req.params;
-  const { food } = req.body; 
+  const { food} = req.body; 
  // name ,userId 
   const userId = req.user.id; 
    const updateFood = {food,userId};
