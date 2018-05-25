@@ -4,7 +4,7 @@ const moment = require('moment')
 const foodSchema = new mongoose.Schema({
   food:{type:String, required:true,},
   calories:{type:String, required:true},
-  create: {type: String,  default: moment((Date.now())).format(' MM/DD/YY hh:mmA')},
+  create: {type: String,  default: moment((Date.now())).format('hh:mmA MM/DD/YY')},
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 })
 

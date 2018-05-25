@@ -6,7 +6,7 @@ const workoutSchema = new mongoose.Schema({
   muscle:{type:String, required:true},
   weight:{type:String,required:true},
   content:{type:String},
-  create: {type: String,  default: moment((Date.now())).format(' MM/DD/YY hh:mmA')},
+  create: {type: String,  default: moment((Date.now())).format('hh:mmA MM/DD/YY')},
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 
 })
