@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const User = require('../models/user')
 
 router.post('/users', (req, res, next) => {
+    console.log(req.body)
     const { username, password } = req.body;
 
     //Chest for missing fields.
@@ -101,7 +102,8 @@ router.post('/users', (req, res, next) => {
                     .then(digest => {
                         const newUser = {
                             username: username,
-                            password: digest
+                            password: digest,
+                            online:null
                         }
                         User.create(newUser)
                             .then((result) => {
@@ -112,6 +114,15 @@ router.post('/users', (req, res, next) => {
             }
         })
 
+})
+
+router.get('/online',function(req,res,next){
+    User.find({online:'true'})
+    .then(result => {
+        console.log(result)
+        return res.json(result)
+    })
+    .catch(err => next(err))
 })
 
 module.exports = router;
