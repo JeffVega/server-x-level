@@ -46,6 +46,7 @@ router.get('/food/:id', (req, res, next) => {
 router.post('/food', (req, res, next) => {
   const { food,calories} = req.body;
   const userId =req.user.id;
+  console.log(userId)
   const newFood = { food,calories,userId};
 
   /***** Never trust users - validate input *****/
@@ -75,6 +76,7 @@ router.put('/food/:id', (req, res, next) => {
   const { food} = req.body; 
  // name ,userId 
   const userId = req.user.id; 
+
    const updateFood = {food,userId};
   /***** Never trust users - validate input *****/
   if (!food) {
