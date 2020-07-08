@@ -24,9 +24,7 @@ app.use(
 );
 
 app.use(
-  cors({
-    origin: CLIENT_ORIGIN
-  })
+  cors()
 );
 //CConfigure passport
 passport.use(localStrategy);
