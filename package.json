@@ -20,7 +20,7 @@
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "knex": "^0.14.4",
-    "moment": "^2.22.1",
+    "moment": "^2.29.2",
     "mongoose": "^5.0.6",
     "mongoose-schema-formatdate": "^1.0.0",
     "morgan": "^1.9.0",
